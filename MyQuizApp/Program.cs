@@ -1,4 +1,6 @@
-﻿using System.Net.Http.Headers;
+﻿using Practice;
+using System;
+using System.Collections.Generic;
 
 namespace MyQuizApp
 {
@@ -6,22 +8,16 @@ namespace MyQuizApp
     {
         static void Main(string[] args)
         {
-            Question[] questions = new Question[]
+            Console.WriteLine("Choose a category: Math, Geography, Science");
+            string category = Console.ReadLine().ToLower();
+
+            List<Question> questions = QuestionBank.GetQuestionsByCategory(category);
+
+            if (questions.Count == 0)
             {
-                new Question(
-                    "What is the capital of Georgia?",
-                     new string[] { "Kutaisi", "Tbilisi", "Batumi", "Rustavi" }, 
-                     1
-                ), new Question(
-                    "What is 2 * 2?",
-                     new string[] { "3", "4", "6", "8" }, 
-                     1
-                ), new Question(
-                    "Which one is better?",
-                     new string[] { "BMW", "Subaru", "Chevy", "Audi" }, 
-                     2
-                )
-            };
+                Console.WriteLine("No questions available for this category.");
+                return;
+            }
 
             Quiz myQuiz = new Quiz(questions);
             myQuiz.StartQuiz();

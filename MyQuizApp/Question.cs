@@ -14,11 +14,15 @@ namespace MyQuizApp
 
         public int CorrectAnswerIndex { get; set; }
 
-        public Question(string questionText, string[] anwers, int correctAnswerIndex)
+        public string Category { get; set; }
+
+
+        public Question(string questionText, string[] anwers, int correctAnswerIndex, string category)
         {
             QuestionText = questionText;
             Answers = anwers;
             CorrectAnswerIndex = correctAnswerIndex;
+            Category = category;
         }
 
         public bool IsCorrectAnswer(int choice)

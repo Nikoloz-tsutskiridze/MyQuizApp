@@ -8,24 +8,35 @@ namespace MyQuizApp
 {
     internal class Quiz
     {
-        private Question[] _questions;
+        private List<Question> _questions;
         private int _score;
 
-
-        public Quiz(Question[] questions)
+        public Quiz(List<Question> questions)
         {
-            this._questions = questions;
             _score = 0;
+            _questions = SelectQuestions(questions);
+        }
+
+        private List<Question> SelectQuestions(List<Question> questions)
+        {
+            Random rnd = new Random();
+            return questions.OrderBy(q => rnd.Next()).Take(3).ToList();
         }
 
         public void StartQuiz()
         {
-            Console.WriteLine("Welcome to the QUIZ!");
-            int questionNumber = 1;
+            if (_questions.Count == 0)
+            {
+                Console.WriteLine("No questions found in this category.");
+                return;
+            }
 
+            Console.WriteLine($"Welcome to the Quiz!");
+
+            int questionNumber = 1;
             foreach (Question question in _questions)
             {
-                Console.WriteLine($"Question{questionNumber}");
+                Console.WriteLine($"Question {questionNumber}");
                 DisplayQuestion(question);
                 int userChoice = GetUserChoice();
 
@@ -38,9 +49,12 @@ namespace MyQuizApp
                 {
                     Console.WriteLine($"Wrong! The correct answer was: {question.Answers[question.CorrectAnswerIndex]}");
                 }
+                questionNumber++;
             }
             DisplayResult();
         }
+
+
 
         private void DisplayResult()
         {
@@ -48,11 +62,11 @@ namespace MyQuizApp
             Console.WriteLine("╔═════════════════════════════════════════════════════════════════════════╗");
             Console.WriteLine("║                                 Results                                 ║");
             Console.WriteLine("╚═════════════════════════════════════════════════════════════════════════╝");
-            Console.ResetColor()
+            Console.ResetColor();
 
-            Console.WriteLine($"Quiz finished. Your score is: {_score} out of {_questions.Length}");
+            Console.WriteLine($"Quiz finished. Your score is: {_score} out of {_questions.Count}");
+            double percentage = (double)_score / _questions.Count;
 
-            double percentage = (double)_score / _questions.Length;
             if (percentage >= 0.8)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -80,13 +94,12 @@ namespace MyQuizApp
             Console.ResetColor();
             Console.WriteLine(question.QuestionText);
 
-            for (int i = 0; i < question.Answers.Length; i++) {
+            for (int i = 0; i < question.Answers.Length; i++)
+            {
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.Write("  ");
-                Console.Write(i + 1);
+                Console.WriteLine($"{i + 1}. {question.Answers[i]}");
                 Console.ResetColor();
-
-                Console.WriteLine($". {question.Answers[i]}");
             }
         }
 
@@ -96,7 +109,7 @@ namespace MyQuizApp
             string input = Console.ReadLine();
             int choice = 0;
 
-            while (!int.TryParse( input ,out choice) || choice < 1 || choice > 4 ) 
+            while (!int.TryParse(input, out choice) || choice < 1 || choice > 4)
             {
                 Console.WriteLine("Invalid choice. Please enter a number between 1 and 4: ");
                 input = Console.ReadLine();
